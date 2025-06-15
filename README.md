@@ -113,24 +113,3 @@ flowchart LR
 ```
 
 For detailed architecture information, see the [design documentation](docs/design.md) and [implementation](nodes.py).
-
-## Project Structure
-
-```
-.
-├── main.py           # Entry point for command-line usage
-├── server.py         # FastAPI server for the web interface
-├── flow.py           # Flow definition connecting the nodes
-├── nodes.py          # CrawlAndExtract, AgentDecision, and DraftAnswer nodes
-├── static/
-│   ├── index.html    # Frontend HTML
-│   ├── style.css     # Frontend CSS
-│   └── script.js     # Frontend Javascript
-├── utils/
-│   ├── call_llm.py      # LLM wrapper
-│   ├── web_crawler.py   # Web crawling and content extraction
-│   └── url_validator.py # URL filtering and validation
-├── docs/
-│   └── design.md     # Detailed design documentation
-└── requirements.txt  # Python dependencies
-```

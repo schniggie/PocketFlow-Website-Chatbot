@@ -76,7 +76,7 @@ This is a tutorial project for [Pocket Flow](https://github.com/The-Pocket/Pocke
    **Examples:**
    ```bash
    # Basic usage with single URL
-   python main.py https://www.amazon.com/gp/help/customer/contact-us "What is your return policy?"
+   python main.py https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-pro "What is the pricing for Gemini 2.5 pro?"
    
    # Multiple URLs with custom instruction
    python main.py https://github.com/scikit-learn/scikit-learn https://scikit-learn.org/stable/ "How do I install this?" "Focus on technical documentation and setup guides"

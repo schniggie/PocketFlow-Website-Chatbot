@@ -1,45 +1,33 @@
-<h1 align="center">Build an AI Chatbot for Your Website</h1>
+<h1 align="center">"Set & Forget" AI Chatbot for Your Website</h1>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![Powered by PocketFlow](https://img.shields.io/badge/Powered%20by-PocketFlow-blueviolet)](https://github.com/The-Pocket/PocketFlow)
  <a href="https://discord.gg/hUHHE9Sa6T">
     <img src="https://img.shields.io/discord/1346833819172601907?logo=discord&style=flat">
 </a>
-> *Tired of customers leaving your website without finding the answers they need? This tutorial shows you how to build an intelligent AI chatbot that crawls your website content and provides instant, accurate answers to visitor questions.*
+> *Want an AI chatbot for your website? The chatbot itself is easy—the real headache is keeping its knowledge up-to-date every time you change your content. This tutorial shows you how to build a truly "set and forget" AI chatbot that learns directly from your live website, so its knowledge stays current automatically. No manual updates. Ever.*
 
 <p align="center">
   <a href="https://github.com/The-Pocket/PocketFlow" target="_blank">
     <img 
-      src="./assets/banner.png" width="800"
+      src="./assets/banner.png" 
     />
   </a>
 </p>
 
+<p align="center">
+  <strong>💬 Use Our Free Service at <a href="https://askthispage.com/" target="_blank">https://askthispage.com/</a> to try out the Chatbot💬</strong>
+
+
+</p>
+
 This is a tutorial project for [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework. The chatbot intelligently explores multiple web pages, makes decisions about which content is relevant, and provides comprehensive answers based on the discovered information.
 
-- **🎉 Online Service Available!** Try our free service at [https://askthispage.com/](https://askthispage.com/) and build an AI chatbot for your website in just 5 minutes!
+- Check out the [Substack Post Tutorial](https://pocketflow.substack.com/p/the-easiest-way-to-build-an-ai-chatbot) for more
 
-- **📺 Technical deep dive coming soon!** Subscribe to [my YouTube channel](https://www.youtube.com/@ZacharyLLM?sub_confirmation=1) to get notified when it's released.
 
-## How It Works
+- **📺 Technical deep dive coming soon!** Subscribe to [My Channel](https://www.youtube.com/@ZacharyLLM?sub_confirmation=1)!
 
-1. **Run the Server**: Follow the Getting Started guide below to run the chatbot locally for testing, then deploy it to production. Or simply use our deployed service at [https://askthispage.com/](https://askthispage.com/)
-
-2. **Enter Your Website URL**: Input the URL of your website to preview how the chatbot will look and behave with your content
-
-   <p align="center">
-     <img src="./assets/step2.png" width="600" alt="Step 2: Enter Website URL">
-   </p>
-
-3. **Try the Chatbot**: Test the AI chatbot's responses. We also provide JavaScript code to easily embed the chatbot into your website
-
-   <p align="center">
-     <img src="./assets/step3.png" width="600" alt="Step 3: Try the Chatbot">
-   </p>
-
-   Our AI chatbot relies on web crawling (see [`web_crawler.py`](utils/web_crawler.py)) to understand your content. Please note these limitations:
-   - Pages with complex JavaScript rendering may not be fully accessible
-   - Pages requiring human verification (like CAPTCHAs) cannot be processed
-   - For authenticated pages, you'll need to implement custom authentication logic in [`chatbot.js`](static/chatbot.js) and [`server.py`](server.py)
 
 ## 🚀 Getting Started
 
@@ -93,6 +81,16 @@ This is a tutorial project for [Pocket Flow](https://github.com/The-Pocket/Pocke
    python server.py
    ```
    Then, open your web browser and navigate to `http://localhost:8000`. You can enter URLs and your question in the form to see the bot work in real-time.
+
+   <p align="center">
+     <img src="./assets/step2.png" width="600" alt="Step 2: Enter Website URL">
+   </p>
+
+
+   Our AI chatbot relies on web crawling (see [`web_crawler.py`](utils/web_crawler.py)) to understand your content. Please note these limitations:
+      - Pages with complex JavaScript rendering may not be fully accessible
+      - Pages requiring human verification (like CAPTCHAs) cannot be processed
+      - For authenticated pages, you'll need to implement custom authentication logic in [`chatbot.js`](static/chatbot.js) and [`server.py`](server.py)
 
 ## Architecture
 

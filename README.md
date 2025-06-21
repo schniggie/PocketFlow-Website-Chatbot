@@ -75,23 +75,42 @@ This is a tutorial project for [Pocket Flow](https://github.com/The-Pocket/Pocke
    python main.py https://github.com/the-pocket/PocketFlow "How does PocketFlow work?" "Prioritize README and documentation files"
    ```
 
-6. **Run the Web Interface (Optional):**
-   Start the web server to use the interactive browser-based interface.
-   ```bash
-   python server.py
-   ```
-   Then, open your web browser and navigate to `http://localhost:8000`. You can enter URLs and your question in the form to see the bot work in real-time.
-
-   <p align="center">
-     <img src="./assets/step2.png" width="600" alt="Step 2: Enter Website URL">
-   </p>
-
-
    Our AI chatbot relies on web crawling (see [`web_crawler.py`](utils/web_crawler.py)) to understand your content. Please note these limitations:
       - Pages with complex JavaScript rendering may not be fully accessible
       - Pages requiring human verification (like CAPTCHAs) cannot be processed
       - For authenticated pages, you'll need to implement custom authentication logic in [`chatbot.js`](static/chatbot.js) and [`server.py`](server.py)
 
+6. **Host the Web Server:**
+   Start the web server to host the interactive chatbot interface.
+   
+   **Option 1: Direct Python hosting**
+   ```bash
+   python server.py
+   ```
+   
+   **Option 2: Docker hosting**
+   You can also host it using our Docker file:
+   ```bash
+   docker build -t website-chatbot .
+   docker run -p 8000:8000 -e GEMINI_API_KEY="your-api-key-here" website-chatbot
+   ```
+   
+   Once the server is running, open your web browser and navigate to `http://localhost:8000`. You can enter URLs and your question in the form to see the bot work in real-time.
+
+   1. **Enter Your Website URL**: Input the URL of your website to preview how the chatbot will look and behave with your content
+
+      <p align="center">
+      <img src="./assets/step2.png" width="600" alt="Step 2: Enter Website URL">
+      </p>
+
+   2. **Try the Chatbot**: Test the AI chatbot's responses. We also provide JavaScript code to easily embed the chatbot into your website
+
+      <p align="center">
+      <img src="./assets/step3.png" width="600" alt="Step 3: Try the Chatbot">
+      </p>
+
+
+      
 ## Architecture
 
 The AI chatbot uses an intelligent agent-based architecture with three main components:

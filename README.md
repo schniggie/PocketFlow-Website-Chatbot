@@ -8,7 +8,7 @@
 > *Want an AI chatbot for your website? The chatbot itself is easy—the real headache is keeping its knowledge up-to-date every time you change your content. This tutorial shows you how to build a truly "set and forget" AI chatbot that learns directly from your live website, so its knowledge stays current automatically. No manual updates. Ever.*
 
 <p align="center">
-  <a href="https://github.com/The-Pocket/PocketFlow" target="_blank">
+  <a href="https://askthispage.com/" target="_blank">
     <img 
       src="./assets/banner.png" 
     />
@@ -25,9 +25,13 @@ This is a tutorial project for [Pocket Flow](https://github.com/The-Pocket/Pocke
 
 - Check out the [Substack Post Tutorial](https://pocketflow.substack.com/p/the-easiest-way-to-build-an-ai-chatbot) for more
 
+- **📺 Watch the technical deep dive on [YouTube](https://www.youtube.com/watch?v=emeVLS4Dmcc)!**
 
-- **📺 Technical deep dive coming soon!** Subscribe to [My Channel](https://www.youtube.com/@ZacharyLLM?sub_confirmation=1)!
-
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=emeVLS4Dmcc">
+    <img src="./assets/youtube.png" alt="Watch the technical deep dive video on YouTube" width="600">
+  </a>
+</p>
 
 ## 🚀 Getting Started
 

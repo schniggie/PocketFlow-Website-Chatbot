@@ -1,7 +1,7 @@
 import asyncio
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig
 
-def crawl_webpage(url):
+def crawl_webpage(url, delay_after_load=2):
     """
     Crawl webpage to extract markdown content and all links using crawl4ai.
     This is a synchronous wrapper around an async implementation.
@@ -11,10 +11,11 @@ def crawl_webpage(url):
         # pip install playwright
         # python -m playwright install
         
-        # Configure the crawler to wait for network idle, which is better for
-        # dynamic pages that load content with JavaScript.
+        # Configure the crawler to wait for network idle, and then add a fixed
+        # delay to allow for JavaScript rendering.
         config = CrawlerRunConfig(
-            wait_until="networkidle"
+            wait_until="load",
+            delay_before_return_html=delay_after_load,
         )
         
         async with AsyncWebCrawler() as crawler:

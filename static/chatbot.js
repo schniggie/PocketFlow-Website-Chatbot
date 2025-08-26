@@ -377,42 +377,38 @@ function initializeChatbot(config) {
         }
 
         .pocketflow-message {
-            margin-bottom: 12px;
+            margin-bottom: 4px; /* Reduced margin since actions will add spacing */
             padding: 10px 14px;
             border-radius: 1rem;
             max-width: 80%;
             line-height: 1.4;
             font-size: 14px;
             word-wrap: break-word;
-            clear: both;
+            display: inline-block; /* Use inline-block for proper positioning */
         }
 
         .pocketflow-message.user {
             background-color: var(--chatbot-primary, hsl(222.2 47.4% 11.2%));
             color: var(--chatbot-primary-foreground, hsl(210 40% 98%));
-            float: right;
-            margin-left: auto;
             border-bottom-right-radius: 0.25rem;
         }
 
         .pocketflow-message.bot {
             background-color: var(--chatbot-secondary, hsl(210 40% 96.1%));
             color: var(--chatbot-secondary-foreground, hsl(222.2 47.4% 11.2%));
-            float: left;
-            margin-right: auto;
             border-bottom-left-radius: 0.25rem;
         }
 
         .pocketflow-message.system {
             background-color: var(--chatbot-muted, hsl(210 40% 96.1%));
             color: var(--chatbot-muted-foreground, hsl(215.4 16.3% 46.9%));
-            float: none;
             margin: 8px auto;
             max-width: 90%;
             text-align: center;
             font-size: 13px;
             font-style: italic;
             border-radius: 1rem;
+            display: block;
         }
 
         .pocketflow-message.bot h1, .pocketflow-message.bot h2, .pocketflow-message.bot h3 {
@@ -451,6 +447,65 @@ function initializeChatbot(config) {
             margin: 0;
             background-color: transparent;
             border: none;
+        }
+
+        /* --- COPY BUTTON STYLES --- */
+        .pocketflow-message-container {
+            margin-bottom: 16px;
+            clear: both;
+            display: block;
+        }
+
+        .pocketflow-message-container.user {
+            text-align: right;
+        }
+
+        .pocketflow-message-container.bot {
+            text-align: left;
+        }
+
+        .pocketflow-message-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+            margin-left: 14px; /* Align with message bubble padding */
+            opacity: 1; /* Always visible */
+        }
+
+        .pocketflow-message-container.user .pocketflow-message-actions {
+            margin-left: 0;
+            margin-right: 14px;
+            justify-content: flex-end;
+        }
+
+        .pocketflow-copy-button {
+            background: none;
+            border: none;
+            padding: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            color: var(--chatbot-muted-foreground, hsl(215.4 16.3% 46.9%));
+            opacity: 1; /* Always visible */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pocketflow-copy-button:hover {
+            background: var(--chatbot-muted, hsl(210 40% 96.1%));
+            color: var(--chatbot-foreground, hsl(222.2 84% 4.9%));
+        }
+
+        .pocketflow-copy-button.copied {
+            color: hsl(142.1, 76.2%, 36.2%);
+        }
+
+        .pocketflow-copy-button svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
         }
 
         .pocketflow-mermaid-diagram {
@@ -649,9 +704,22 @@ function initializeChatbot(config) {
                     <strong><a href="https://github.com/The-Pocket/PocketFlow-Tutorial-Website-Chatbot" target="_blank" style="color: var(--chatbot-primary); text-decoration: none;">This chatbot is open source</a></strong>
                 </div>
                 
-                <div class="pocketflow-message bot">
-                    <div id="pocketflow-chat-welcome-message">
-                        Welcome! I'm here to help you with questions about the configured pages. What would you like to know?
+                <div class="pocketflow-message-container">
+                    <div class="pocketflow-message bot">
+                        <div id="pocketflow-chat-welcome-message">
+                            Welcome! I'm here to help you with questions about the configured pages. What would you like to know?
+                        </div>
+                    </div>
+                    <div class="pocketflow-message-actions">
+                        <button class="pocketflow-copy-button" aria-label="Copy message">
+                            <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                            </svg>
+                            <svg class="check-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20,6 9,17 4,12"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -746,6 +814,56 @@ function initializeChatbot(config) {
         // Update welcome message with current URL
         const welcomeMessage = document.getElementById('pocketflow-chat-welcome-message');
         welcomeMessage.innerHTML = `Welcome! I'm here to help you with questions about: <a href="${finalCurrentUrl}" target="_blank" style="color: var(--chatbot-primary); text-decoration: none;">${finalCurrentUrl}</a>. What would you like to know?`;
+
+        // Add event listener for the initial copy button
+        const initialCopyButton = document.querySelector('.pocketflow-message-container .pocketflow-message-actions .pocketflow-copy-button');
+        if (initialCopyButton) {
+            initialCopyButton.addEventListener('click', async () => {
+                try {
+                    const textContent = welcomeMessage.innerText || welcomeMessage.textContent || '';
+                    await navigator.clipboard.writeText(textContent);
+                    
+                    // Show success feedback
+                    initialCopyButton.classList.add('copied');
+                    initialCopyButton.querySelector('.copy-icon').style.display = 'none';
+                    initialCopyButton.querySelector('.check-icon').style.display = 'block';
+                    initialCopyButton.setAttribute('aria-label', 'Copied!');
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        initialCopyButton.classList.remove('copied');
+                        initialCopyButton.querySelector('.copy-icon').style.display = 'block';
+                        initialCopyButton.querySelector('.check-icon').style.display = 'none';
+                        initialCopyButton.setAttribute('aria-label', 'Copy message');
+                    }, 2000);
+                    
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    // Fallback for older browsers
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = welcomeMessage.innerText || welcomeMessage.textContent || '';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        // Show success feedback
+                        initialCopyButton.classList.add('copied');
+                        initialCopyButton.querySelector('.copy-icon').style.display = 'none';
+                        initialCopyButton.querySelector('.check-icon').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            initialCopyButton.classList.remove('copied');
+                            initialCopyButton.querySelector('.copy-icon').style.display = 'block';
+                            initialCopyButton.querySelector('.check-icon').style.display = 'none';
+                        }, 2000);
+                    } catch (fallbackErr) {
+                        console.error('Fallback copy failed: ', fallbackErr);
+                    }
+                }
+            });
+        }
 
         // Initialize chatbot functionality
         initializeChatbotLogic(finalCurrentUrl, extra_urls, prefixes, chatbotName, wsUrl, instruction, isOpen, wasCurrentUrlProvided);
@@ -913,18 +1031,95 @@ function initializeChatbot(config) {
 
         // Message management functions
         function addMessage(content, isUser = false, isSystem = false) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('pocketflow-message-container');
+            
+            if (isUser) {
+                messageContainer.classList.add('user');
+            }
+            
             const messageElement = document.createElement('div');
             if (isSystem) {
                 messageElement.classList.add('pocketflow-message', 'system');
+                // System messages don't need action buttons, just add the message
+                messageElement.innerHTML = content;
+                messageContainer.appendChild(messageElement);
             } else {
                 messageElement.classList.add('pocketflow-message', isUser ? 'user' : 'bot');
+                messageElement.innerHTML = content;
+                messageContainer.appendChild(messageElement);
+                
+                // Add action buttons for non-system messages
+                if (!isUser) { // Only add copy button for bot messages
+                    const actionsContainer = document.createElement('div');
+                    actionsContainer.classList.add('pocketflow-message-actions');
+                    
+                    const copyButton = document.createElement('button');
+                    copyButton.classList.add('pocketflow-copy-button');
+                    copyButton.setAttribute('aria-label', 'Copy message');
+                    copyButton.innerHTML = `
+                        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                        <svg class="check-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                    `;
+                    
+                    copyButton.addEventListener('click', async () => {
+                        try {
+                            // Get the text content without HTML tags
+                            const textContent = messageElement.innerText || messageElement.textContent || '';
+                            await navigator.clipboard.writeText(textContent);
+                            
+                            // Show success feedback
+                            copyButton.classList.add('copied');
+                            copyButton.querySelector('.copy-icon').style.display = 'none';
+                            copyButton.querySelector('.check-icon').style.display = 'block';
+                            copyButton.setAttribute('aria-label', 'Copied!');
+                            
+                            // Reset after 2 seconds
+                            setTimeout(() => {
+                                copyButton.classList.remove('copied');
+                                copyButton.querySelector('.copy-icon').style.display = 'block';
+                                copyButton.querySelector('.check-icon').style.display = 'none';
+                                copyButton.setAttribute('aria-label', 'Copy message');
+                            }, 2000);
+                            
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                            // Fallback for older browsers
+                            try {
+                                const textArea = document.createElement('textarea');
+                                textArea.value = messageElement.innerText || messageElement.textContent || '';
+                                document.body.appendChild(textArea);
+                                textArea.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(textArea);
+                                
+                                // Show success feedback
+                                copyButton.classList.add('copied');
+                                copyButton.querySelector('.copy-icon').style.display = 'none';
+                                copyButton.querySelector('.check-icon').style.display = 'block';
+                                
+                                setTimeout(() => {
+                                    copyButton.classList.remove('copied');
+                                    copyButton.querySelector('.copy-icon').style.display = 'block';
+                                    copyButton.querySelector('.check-icon').style.display = 'none';
+                                }, 2000);
+                            } catch (fallbackErr) {
+                                console.error('Fallback copy failed: ', fallbackErr);
+                            }
+                        }
+                    });
+                    
+                    actionsContainer.appendChild(copyButton);
+                    messageContainer.appendChild(actionsContainer);
+                }
             }
-            messageElement.innerHTML = content;
             
-            chatMessages.appendChild(messageElement);
-            const clearDiv = document.createElement('div');
-            clearDiv.style.clear = 'both';
-            chatMessages.appendChild(clearDiv);
+            chatMessages.appendChild(messageContainer);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
@@ -940,11 +1135,11 @@ function initializeChatbot(config) {
         function clearChatHistory() {
             // Keep only the context banner and welcome message
             const contextBanner = document.getElementById('pocketflow-chat-context-banner');
-            const welcomeMessage = document.querySelector('.pocketflow-message.bot');
+            const welcomeMessageContainer = document.querySelector('.pocketflow-message-container');
             
             chatMessages.innerHTML = '';
             if (contextBanner) chatMessages.appendChild(contextBanner);
-            if (welcomeMessage) chatMessages.appendChild(welcomeMessage);
+            if (welcomeMessageContainer) chatMessages.appendChild(welcomeMessageContainer);
             
             const clearDiv = document.createElement('div');
             clearDiv.style.clear = 'both';

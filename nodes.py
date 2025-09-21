@@ -39,9 +39,6 @@ class CrawlAndExtract(BatchNode):
         
         successful_crawls = 0
         for url_idx, content, links in exec_res_list:
-            # This part only runs for successful crawls
-            successful_crawls += 1
-            
             # Truncate content to max chars
             truncated_content = content[:content_max_chars]
             if len(content) > content_max_chars:
@@ -50,20 +47,26 @@ class CrawlAndExtract(BatchNode):
             shared["url_content"][url_idx] = truncated_content
             shared["visited_urls"].add(url_idx)
             
-            valid_links = filter_valid_urls(links, shared["allowed_domains"])
-            
-            if len(valid_links) > max_links_per_page:
-                valid_links = valid_links[:max_links_per_page]
-            
-            link_indices = []
-            for link in valid_links:
-                if link not in shared["all_discovered_urls"]:
-                    shared["all_discovered_urls"].append(link)
-                    new_urls.append(len(shared["all_discovered_urls"]) - 1)
-                link_idx = shared["all_discovered_urls"].index(link)
-                link_indices.append(link_idx)
-            
-            shared["url_graph"][url_idx] = link_indices
+            # Only process links if crawling was successful (links is not None)
+            if links is not None:
+                successful_crawls += 1
+                valid_links = filter_valid_urls(links, shared["allowed_domains"])
+                
+                if len(valid_links) > max_links_per_page:
+                    valid_links = valid_links[:max_links_per_page]
+                
+                link_indices = []
+                for link in valid_links:
+                    if link not in shared["all_discovered_urls"]:
+                        shared["all_discovered_urls"].append(link)
+                        new_urls.append(len(shared["all_discovered_urls"]) - 1)
+                    link_idx = shared["all_discovered_urls"].index(link)
+                    link_indices.append(link_idx)
+                
+                shared["url_graph"][url_idx] = link_indices
+            else:
+                # For failed crawls, just set empty link list
+                shared["url_graph"][url_idx] = []
         
         shared["urls_to_process"] = []
         

@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  chatbot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      - ./static:/app/static
+      - ./utils:/app/utils
+      - ./docs:/app/docs
+      - ./assets:/app/assets
+    command: python server.py
+    networks:
+      - chatbot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add a separate container for code execution isolation
+  code-executor:
+    build:
+      context: .
+      dockerfile: Dockerfile.executor
+    environment:
+      - EXECUTION_TIMEOUT=30
+      - MAX_OUTPUT_SIZE=10000
+    volumes:
+      - /tmp/code-execution:/tmp/code-execution
+    networks:
+      - chatbot-network
+    restart: unless-stopped
+    # This container would be used for isolated code execution
+    # Currently, code execution runs in the main container
+    profiles:
+      - isolated-execution
+
+  # Development/testing container
+  chatbot-dev:
+    build: .
+    ports:
+      - "8001:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    command: python server.py
+    networks:
+      - chatbot-network
+    profiles:
+      - development
+
+  # CLI testing container
+  chatbot-cli:
+    build: .
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    networks:
+      - chatbot-network
+    profiles:
+      - cli-test
+    # Example usage: docker-compose run chatbot-cli python main.py https://example.com "EXECUTE code to analyze this data"
+
+networks:
+  chatbot-network:
+    driver: bridge
+
+volumes:
+  code-execution-temp:
+    driver: local
